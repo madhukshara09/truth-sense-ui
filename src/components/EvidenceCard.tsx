@@ -35,7 +35,7 @@ const orgIcons: Record<string, typeof BookOpen> = {
 
 function iconFor(publisher: string) {
   const key = Object.keys(orgIcons).find((k) => publisher.toUpperCase().includes(k.toUpperCase()));
-  return key ? orgIcons[key] : Building2;
+  return (key ? orgIcons[key] : undefined) ?? Building2;
 }
 
 export function EvidenceCard({ source }: { source: EvidenceSource }) {
