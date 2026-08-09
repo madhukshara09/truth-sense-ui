@@ -21,7 +21,7 @@ export function ClaimCard({
   source,
 }: {
   claim: ClaimBreakdown;
-  source?: EvidenceSource;
+  source?: EvidenceSource | undefined;
 }) {
   const { label, badge, Icon } = statusConfig[claim.status];
 
