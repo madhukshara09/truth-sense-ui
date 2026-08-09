@@ -1,5 +1,13 @@
 export type Verdict = "verified" | "partial" | "hallucination";
 
+export type HallucinationStatus =
+  | "verified"
+  | "partially-supported"
+  | "needs-review"
+  | "high-risk";
+
+export type ConfidenceLevel = "High" | "Medium" | "Low";
+
 export interface EvidenceSource {
   id: string;
   title: string;
@@ -18,17 +26,29 @@ export interface ExplanationCard {
   tone: "success" | "warning" | "destructive" | "neutral";
 }
 
+export interface ClaimBreakdown {
+  id: string;
+  claim: string;
+  status: "verified" | "partially-supported" | "hallucinated";
+  explanation: string;
+  sourceId: string;
+}
+
 export interface VerificationResult {
   question: string;
   originalResponse: string;
   verifiedResponse: string;
   trustScore: number;
   verdict: Verdict;
+  confidence: ConfidenceLevel;
+  status: HallucinationStatus;
+  statusReason: string;
   checkedClaims: number;
   flaggedClaims: number;
   latencyMs: number;
   sources: EvidenceSource[];
   explanations: ExplanationCard[];
+  claims: ClaimBreakdown[];
 }
 
 export const sampleQuestions = [
@@ -36,6 +56,14 @@ export const sampleQuestions = [
   "Is a fasting glucose of 118 mg/dL considered diabetes?",
   "How long should antibiotics be given for uncomplicated cystitis?",
   "Does vitamin C shorten the duration of the common cold?",
+];
+
+export const verificationSteps = [
+  "Retrieving trusted medical sources",
+  "Extracting medical claims",
+  "Comparing evidence",
+  "Calculating trust score",
+  "Generating explainable report",
 ];
 
 export const placeholderResult: VerificationResult = {
@@ -46,6 +74,10 @@ export const placeholderResult: VerificationResult = {
     "Ibuprofen and lisinopril can interact. NSAIDs may blunt the antihypertensive effect of ACE inhibitors and, especially when combined with a diuretic, increase the risk of acute kidney injury. Short courses at the lowest effective dose may be acceptable under clinician supervision, with blood pressure and renal function monitoring. For chronic low back pain, guidelines favour non-pharmacological care first, with NSAIDs used as a time-limited option rather than an indefinite therapy. Discuss alternatives such as topical NSAIDs or acetaminophen with your prescriber.",
   trustScore: 38,
   verdict: "hallucination",
+  confidence: "Low",
+  status: "high-risk",
+  statusReason:
+    "Three of five extracted claims directly contradict clinical guidelines and regulatory labelling, including a denied drug interaction and unsafe long-term dosing advice.",
   checkedClaims: 5,
   flaggedClaims: 3,
   latencyMs: 2140,
@@ -123,6 +155,47 @@ export const placeholderResult: VerificationResult = {
       detail:
         "Lisinopril was accurately classified as an ACE inhibitor and ibuprofen as an NSAID — the entity grounding held up.",
       tone: "success",
+    },
+  ],
+  claims: [
+    {
+      id: "c1",
+      claim: "Ibuprofen is completely safe to combine with lisinopril.",
+      status: "hallucinated",
+      explanation:
+        "Guidelines document a real interaction; NSAIDs reduce the effectiveness of ACE inhibitors.",
+      sourceId: "s1",
+    },
+    {
+      id: "c2",
+      claim: "Ibuprofen has no effect on blood pressure.",
+      status: "hallucinated",
+      explanation:
+        "NSAIDs can raise blood pressure and blunt antihypertensive therapy, especially with ACE inhibitors.",
+      sourceId: "s1",
+    },
+    {
+      id: "c3",
+      claim: "Up to 3200 mg daily can be taken long-term without monitoring.",
+      status: "hallucinated",
+      explanation:
+        "Labelling caps prescription dosing at 3200 mg/day and requires renal and blood pressure monitoring for chronic use.",
+      sourceId: "s4",
+    },
+    {
+      id: "c4",
+      claim: "NSAIDs are the first-line choice for chronic back pain.",
+      status: "partially-supported",
+      explanation:
+        "NSAIDs are first-line pharmacologic therapy, but only after non-pharmacological care has been tried.",
+      sourceId: "s3",
+    },
+    {
+      id: "c5",
+      claim: "Lisinopril is an ACE inhibitor and ibuprofen is an NSAID.",
+      status: "verified",
+      explanation: "Drug-class grounding matches regulatory labelling and guideline definitions.",
+      sourceId: "s2",
     },
   ],
 };

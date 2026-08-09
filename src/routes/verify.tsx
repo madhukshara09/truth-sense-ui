@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Loader2, Sparkles, Stethoscope, Wand2 } from "lucide-react";
+import { Loader2, Stethoscope, Wand2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { sampleQuestions, placeholderResult } from "@/lib/verification-data";
+import { sampleQuestions, placeholderResult, verificationSteps } from "@/lib/verification-data";
+import { VerificationProgress } from "@/components/VerificationProgress";
 
 export const Route = createFileRoute("/verify")({
   head: () => ({
@@ -25,12 +26,6 @@ export const Route = createFileRoute("/verify")({
   component: VerifyPage,
 });
 
-const stages = [
-  "Extracting medical claims…",
-  "Retrieving clinical evidence…",
-  "Scoring agreement and source quality…",
-];
-
 function VerifyPage() {
   const navigate = useNavigate();
   const [question, setQuestion] = useState("");
@@ -46,14 +41,10 @@ function VerifyPage() {
     setLoading(true);
     setStage(0);
     // Placeholder verification flow — replaced by the API later.
-    const t1 = setTimeout(() => setStage(1), 700);
-    const t2 = setTimeout(() => setStage(2), 1400);
-    const t3 = setTimeout(() => {
-      clearTimeout(t1);
-      clearTimeout(t2);
-      navigate({ to: "/results" });
-    }, 2100);
-    return () => clearTimeout(t3);
+    verificationSteps.forEach((_, i) => {
+      if (i > 0) setTimeout(() => setStage(i), i * 650);
+    });
+    setTimeout(() => navigate({ to: "/results" }), verificationSteps.length * 650 + 400);
   }
 
   return (
@@ -145,27 +136,8 @@ function VerifyPage() {
           </Button>
 
           {loading && (
-            <div className="mt-6 space-y-3 rounded-xl bg-muted/70 p-4">
-              {stages.map((s, i) => (
-                <div key={s} className="flex items-center gap-3 text-sm transition-opacity">
-                  {i < stage ? (
-                    <Sparkles className="size-4 shrink-0 text-success" />
-                  ) : i === stage ? (
-                    <Loader2 className="size-4 shrink-0 animate-spin text-primary" />
-                  ) : (
-                    <span className="size-4 shrink-0 rounded-full border border-border" />
-                  )}
-                  <span className={i <= stage ? "text-foreground" : "text-muted-foreground"}>
-                    {s}
-                  </span>
-                </div>
-              ))}
-              <div className="h-1.5 overflow-hidden rounded-full bg-secondary">
-                <div
-                  className="h-full rounded-full bg-primary transition-[width] duration-700 ease-out"
-                  style={{ width: `${((stage + 1) / stages.length) * 100}%` }}
-                />
-              </div>
+            <div className="mt-6">
+              <VerificationProgress current={stage} />
             </div>
           )}
 

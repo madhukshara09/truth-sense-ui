@@ -5,10 +5,20 @@ import {
   BrainCircuit,
   FileSearch,
   Gauge,
+  Library,
+  ScanSearch,
   ShieldCheck,
   Stethoscope,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import heroIllustration from "@/assets/hero-verification.png";
+
+const heroBadges = [
+  { Icon: Library, label: "Trusted Medical Sources" },
+  { Icon: ScanSearch, label: "Hallucination Detection" },
+  { Icon: BrainCircuit, label: "Explainable Verification" },
+];
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -82,20 +92,31 @@ function Home() {
               Evidence-grounded medical AI safety
             </span>
             <h1 className="mt-6 text-4xl font-bold leading-[1.08] sm:text-5xl lg:text-6xl">
-              Trust an AI health answer only <span className="text-gradient-brand">after</span> it
-              has been verified.
+              <span className="text-gradient-brand">TruthSense AI</span>
             </h1>
             <p className="mt-5 max-w-xl text-lg leading-relaxed text-muted-foreground">
-              TruthSense AI breaks any medical AI response into individual claims, checks each one
-              against clinical guidelines and primary literature, and returns a corrected answer
-              with a transparent trust score.
+              Verify AI-generated medical information with trusted evidence, explainable AI, and
+              confidence scoring.
             </p>
+
+            <ul className="mt-7 flex flex-wrap gap-2.5">
+              {heroBadges.map((b) => (
+                <li
+                  key={b.label}
+                  className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3.5 py-2 text-sm font-medium shadow-sm"
+                >
+                  <b.Icon className="size-4 shrink-0 text-primary" />
+                  {b.label}
+                </li>
+              ))}
+            </ul>
+
             <div className="mt-8 flex flex-wrap gap-3">
               <Button asChild size="lg" className="rounded-xl">
                 <Link to="/verify">Verify a response</Link>
               </Button>
               <Button asChild size="lg" variant="outline" className="rounded-xl">
-                <Link to="/results">See a sample report</Link>
+                <Link to="/about">Learn More</Link>
               </Button>
             </div>
             <dl className="mt-10 grid max-w-lg grid-cols-3 gap-4">
@@ -112,34 +133,18 @@ function Home() {
             </dl>
           </div>
 
-          <div className="surface-card animate-rise p-6">
-            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-              Live verification preview
-            </p>
-            <div className="mt-4 rounded-xl border-2 border-destructive/40 bg-destructive-soft/50 p-4">
-              <p className="text-xs font-semibold text-destructive">Original AI response</p>
-              <p className="mt-2 text-sm leading-relaxed">
-                “Ibuprofen is completely safe with lisinopril and has no effect on blood pressure.”
-              </p>
-            </div>
-            <div className="mt-4 rounded-xl border-2 border-success/40 bg-success-soft/50 p-4">
-              <p className="text-xs font-semibold text-success">Verified response</p>
-              <p className="mt-2 text-sm leading-relaxed">
-                “NSAIDs may blunt the antihypertensive effect of ACE inhibitors and raise acute
-                kidney injury risk — use short courses with monitoring.”
-              </p>
-            </div>
-            <div className="mt-4 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-xl bg-muted p-4">
-              <p className="min-w-0 text-sm text-muted-foreground">
-                3 of 5 claims contradicted authoritative sources.
-              </p>
-              <span className="shrink-0 rounded-full bg-destructive-soft px-3 py-1 text-sm font-bold text-destructive">
-                38 / 100
-              </span>
-            </div>
+          <div className="animate-rise flex justify-center">
+            <img
+              src={heroIllustration}
+              alt="Shield with a checkmark surrounded by AI circuitry and a medical cross, representing AI healthcare verification"
+              width={1024}
+              height={1024}
+              className="w-full max-w-md drop-shadow-xl"
+            />
           </div>
         </div>
       </section>
+
 
       <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
         <h2 className="text-3xl font-bold sm:text-4xl">How verification works</h2>
