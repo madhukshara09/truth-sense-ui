@@ -21,12 +21,14 @@ export function TrustScoreCard({
   confidence,
   sourceCount,
   latencyMs,
+  verificationStatus,
   className,
 }: {
   score: number;
   confidence: ConfidenceLevel;
   sourceCount: number;
   latencyMs: number;
+  verificationStatus: string;
   className?: string;
 }) {
   const tone = confidenceTone[confidence];
@@ -36,7 +38,7 @@ export function TrustScoreCard({
   const c = 2 * Math.PI * r;
 
   const stats = [
-    { Icon: Gauge, label: "Confidence level", value: confidence },
+    { Icon: Gauge, label: "Verification status", value: verificationStatus },
     { Icon: BookMarked, label: "Evidence sources", value: String(sourceCount) },
     { Icon: Clock, label: "Verification time", value: `${(latencyMs / 1000).toFixed(1)}s` },
   ];
@@ -92,7 +94,7 @@ export function TrustScoreCard({
       <span
         className={cn("rounded-full px-3.5 py-1.5 text-sm font-semibold", tone.soft)}
       >
-        {confidence} confidence
+        {confidence} Confidence
       </span>
 
       <dl className="grid w-full gap-3 sm:grid-cols-3">

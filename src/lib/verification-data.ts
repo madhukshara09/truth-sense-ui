@@ -29,7 +29,8 @@ export interface ExplanationCard {
 export interface ClaimBreakdown {
   id: string;
   claim: string;
-  status: "verified" | "partially-supported" | "hallucinated";
+  status: "supported" | "contradicted" | "insufficient";
+  confidence: number;
   explanation: string;
   sourceId: string;
 }
@@ -90,7 +91,7 @@ export const placeholderResult: VerificationResult = {
       type: "Clinical guideline",
       excerpt:
         "NSAIDs can reduce the effectiveness of antihypertensive therapy and should be used with caution in people taking ACE inhibitors.",
-      url: "https://example.org/nice-ng136",
+      url: "#",
       agreement: "contradicts",
     },
     {
@@ -101,7 +102,7 @@ export const placeholderResult: VerificationResult = {
       type: "Systematic review",
       excerpt:
         "Concurrent use of a diuretic, ACE inhibitor and NSAID was associated with a significantly increased rate of acute kidney injury.",
-      url: "https://example.org/bmj-triple-whammy",
+      url: "#",
       agreement: "supports",
     },
     {
@@ -112,7 +113,7 @@ export const placeholderResult: VerificationResult = {
       type: "Clinical guideline",
       excerpt:
         "Clinicians should initially select nonpharmacologic treatment for chronic low back pain; NSAIDs are a first-line pharmacologic option only if nonpharmacologic therapy fails.",
-      url: "https://example.org/acp-low-back-pain",
+      url: "#",
       agreement: "context",
     },
     {
@@ -123,7 +124,7 @@ export const placeholderResult: VerificationResult = {
       type: "Regulatory",
       excerpt:
         "Use the lowest effective dose for the shortest duration. Prescription maximum is 3200 mg/day, but chronic use requires monitoring of renal function and blood pressure.",
-      url: "https://example.org/fda-ibuprofen",
+      url: "#",
       agreement: "contradicts",
     },
   ],
@@ -161,7 +162,8 @@ export const placeholderResult: VerificationResult = {
     {
       id: "c1",
       claim: "Ibuprofen is completely safe to combine with lisinopril.",
-      status: "hallucinated",
+      status: "contradicted",
+      confidence: 94,
       explanation:
         "Guidelines document a real interaction; NSAIDs reduce the effectiveness of ACE inhibitors.",
       sourceId: "s1",
@@ -169,7 +171,8 @@ export const placeholderResult: VerificationResult = {
     {
       id: "c2",
       claim: "Ibuprofen has no effect on blood pressure.",
-      status: "hallucinated",
+      status: "contradicted",
+      confidence: 91,
       explanation:
         "NSAIDs can raise blood pressure and blunt antihypertensive therapy, especially with ACE inhibitors.",
       sourceId: "s1",
@@ -177,7 +180,8 @@ export const placeholderResult: VerificationResult = {
     {
       id: "c3",
       claim: "Up to 3200 mg daily can be taken long-term without monitoring.",
-      status: "hallucinated",
+      status: "contradicted",
+      confidence: 88,
       explanation:
         "Labelling caps prescription dosing at 3200 mg/day and requires renal and blood pressure monitoring for chronic use.",
       sourceId: "s4",
@@ -185,16 +189,18 @@ export const placeholderResult: VerificationResult = {
     {
       id: "c4",
       claim: "NSAIDs are the first-line choice for chronic back pain.",
-      status: "partially-supported",
+      status: "insufficient",
+      confidence: 62,
       explanation:
         "NSAIDs are first-line pharmacologic therapy, but only after non-pharmacological care has been tried.",
       sourceId: "s3",
     },
     {
       id: "c5",
-      claim: "Lisinopril is an ACE inhibitor and ibuprofen is an NSAID.",
-      status: "verified",
-      explanation: "Drug-class grounding matches regulatory labelling and guideline definitions.",
+      claim: "Lisinopril is an ACE inhibitor.",
+      status: "supported",
+      confidence: 96,
+      explanation: "The claim is supported by the retrieved medical evidence.",
       sourceId: "s2",
     },
   ],

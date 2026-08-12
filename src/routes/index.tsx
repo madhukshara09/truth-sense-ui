@@ -119,14 +119,14 @@ function Home() {
                 <Link to="/about">Learn More</Link>
               </Button>
             </div>
-            <dl className="mt-10 grid max-w-lg grid-cols-3 gap-4">
+            <dl className="mt-10 grid max-w-lg gap-4 sm:grid-cols-3">
               {[
-                ["12k+", "Claims checked"],
-                ["94%", "Flag precision"],
-                ["2.1s", "Median latency"],
+                ["Claim-Level", "Verification"],
+                ["Evidence-Grounded", "Analysis"],
+                ["Explainable", "Results"],
               ].map(([value, label]) => (
                 <div key={label}>
-                  <dt className="font-display text-2xl font-bold text-primary">{value}</dt>
+                  <dt className="font-display text-lg font-bold text-primary">{value}</dt>
                   <dd className="text-xs text-muted-foreground">{label}</dd>
                 </div>
               ))}
