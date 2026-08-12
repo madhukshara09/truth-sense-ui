@@ -92,6 +92,7 @@ function ResultsPage() {
           confidence={r.confidence}
           sourceCount={r.sources.length}
           latencyMs={r.latencyMs}
+          verificationStatus={r.verdict === "verified" ? "Verified" : r.verdict === "partial" ? "Partial" : "Flagged"}
         />
         <HallucinationStatusCard status={r.status} reason={r.statusReason} />
       </div>
